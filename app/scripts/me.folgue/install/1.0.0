@@ -1,0 +1,4 @@
+from os import listdir
+
+for node in listdir:
+    print(node)

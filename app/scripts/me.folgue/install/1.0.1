@@ -1,0 +1,7 @@
+from os import listdir
+
+for node in listdir():
+    if node.endswith(".java"):
+        print(f"Java file: {node}")
+    else:
+        print(node)
