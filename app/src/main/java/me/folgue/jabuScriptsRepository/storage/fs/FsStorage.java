@@ -2,10 +2,12 @@ package me.folgue.jabuScriptsRepository.storage.fs;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Arrays;
+import me.folgue.jabuScriptsRepository.RepositoryServer;
 import me.folgue.jabuScriptsRepository.storage.ScriptId;
 import me.folgue.jabuScriptsRepository.storage.ScriptStorage;
 
@@ -60,10 +62,15 @@ public class FsStorage implements ScriptStorage {
 
     @Override
     public Optional<String> getScriptContents(ScriptId id) throws Exception {
+        String targetPath = this.generatePath(id);
         if (!this.exists(id)) {
             return Optional.empty();
+        } else if (!this.isValidAbsolutePath(targetPath)) {
+            RepositoryServer.LOG.warn("Attempt to access illegal path: " + targetPath);
+            return Optional.empty();
         } else {
-            return Optional.of(Files.readString(Paths.get(this.generatePath(id))));
+            RepositoryServer.LOG.debug("Fetching " + targetPath);
+            return Optional.of(Files.readString(Paths.get(targetPath)));
         }
     }
 
