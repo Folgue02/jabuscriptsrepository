@@ -16,7 +16,7 @@ public class FsStorage implements ScriptStorage {
     private final String basePath;
 
     public FsStorage(String basePath) {
-        this.basePath = basePath;
+        this.basePath = Path.of(basePath).normalize().toString();
     }
 
     @Override
@@ -63,10 +63,11 @@ public class FsStorage implements ScriptStorage {
     @Override
     public Optional<String> getScriptContents(ScriptId id) throws Exception {
         String targetPath = this.generatePath(id);
+        System.out.println("Request for file at " + targetPath);
         if (!this.exists(id)) {
             return Optional.empty();
         } else if (!this.isValidAbsolutePath(targetPath)) {
-            RepositoryServer.LOG.warn("Attempt to access illegal path: " + targetPath);
+            System.out.println("Attempt to access illegal path: " + targetPath);
             return Optional.empty();
         } else {
             RepositoryServer.LOG.debug("Fetching " + targetPath);
